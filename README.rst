@@ -9,8 +9,8 @@ password change, password reset functionality.
 Live coding recording
 =====================
 
-https://www.youtube.com/watch?v=JATagD3QnZc
-
+- https://www.youtube.com/watch?v=JATagD3QnZc
+- https://www.youtube.com/watch?v=4pIDEHUhE6g
 
 Contact
 =======
