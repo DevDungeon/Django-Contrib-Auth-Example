@@ -1,0 +1,1 @@
+{% load i18n %}{% trans 'You are already registered on ' %}{{ site_name }}

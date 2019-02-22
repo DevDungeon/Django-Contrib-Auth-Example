@@ -124,7 +124,29 @@ STATIC_URL = '/static/'
 
 
 LOGIN_URL = '/login'  # Where you get sent when login is required
-LOGIN_REDIRECT_URL = '/profile'  # Where you get forwarded after logging in
+LOGIN_REDIRECT_URL = '/'  # Where you get forwarded after logging in
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #DEFAULT_FROM_EMAIL=''
+
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    #'authn.backends.SocialAuthBackend',
+]
+
+
+DISCORD_SOCIAL_LOGIN_URL = 'https://discordapp.com/api/oauth2/authorize?response_type=code&client_id=547665895078494208&scope=identify%20email&state=1010101101010101010&redirect_uri=http%3A%2F%2Fminecraft.devdungeon.com:8000/discord_oauth'
+DISCORD_CLIENT_ID = "547665895078494208"
+DISCORD_BASE_AUTH_URL = 'https://discordapp.com/api/oauth2/authorize'
+DISCORD_TOKEN_URL = 'https://discordapp.com/api/oauth2/token'
+
+# os.environ['DISCORD_CLIENT_SECRET']
+DISCORD_CLIENT_SECRET = ""
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locales'),
+]
+
+SITE_NAME = 'Example Site'

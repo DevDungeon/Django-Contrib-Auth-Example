@@ -1,8 +1,43 @@
 {% extends "website/base.html" %}
+
+{% block navbar %}{% endblock %}
+{% block extra_styles %}
+    body {
+    padding-top: 0px;
+    }
+
+    #content-main {
+    max-width: 300px;
+    padding: 19px 29px 29px;
+    margin: 0 auto 20px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
+
+    #login-form input[type="text"],
+    #login-form input[type="password"] {
+    font-size: 16px;
+    height: auto;
+    margin-bottom: 15px;
+    padding: 7px 9px;
+    }
+    #login-form input[type="submit"] {
+    color: blue;
+    }
+
+{% endblock %}
+
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}">
-{{ form.media }}
+{% block extrastyle %}{{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}">
+    {{ form.media }}
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} login{% endblock %}
@@ -16,51 +51,69 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-{% if form.errors and not form.non_field_errors %}
-<p class="errornote">
-{% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
-</p>
-{% endif %}
 
-{% if form.non_field_errors %}
-{% for error in form.non_field_errors %}
-<p class="errornote">
-    {{ error }}
-</p>
-{% endfor %}
-{% endif %}
 
-<div id="content-main">
 
-{% if user.is_authenticated %}
-<p class="errornote">
-{% blocktrans trimmed %}
-    You are authenticated as {{ username }}, but are not authorized to
-    access this page. Would you like to login to a different account?
-{% endblocktrans %}
-</p>
-{% endif %}
 
-<form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
-  <div class="form-row">
-    {{ form.username.errors }}
-    {{ form.username.label_tag }} {{ form.username }}
-  </div>
-  <div class="form-row">
-    {{ form.password.errors }}
-    {{ form.password.label_tag }} {{ form.password }}
-    <input type="hidden" name="next" value="{{ next }}">
-  </div>
-  {% url 'admin_password_reset' as password_reset_url %}
-  {% if password_reset_url %}
-  <div class="password-reset-link">
-    <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
-  </div>
-  {% endif %}
-  <div class="submit-row">
-    <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}">
-  </div>
-</form>
 
-</div>
+    <div id="content-main">
+
+        {% if form.errors and not form.non_field_errors %}
+            <p class="errornote">
+                {% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}
+                    {% trans "Please correct the errors below." %}{% endif %}
+            </p>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="errornote">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        {% endif %}
+
+        <h1>Login</h1>
+
+        {% if user.is_authenticated %}
+            <p class="errornote">
+                {% blocktrans trimmed %}
+                    You are authenticated as {{ username }}, but are not authorized to
+                    access this page. Would you like to login to a different account?
+                {% endblocktrans %}
+            </p>
+        {% endif %}
+
+        <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+            <div class="form-row">
+                {{ form.username.errors }}
+                {{ form.username.label_tag }} {{ form.username }}
+            </div>
+            <div class="form-row">
+                {{ form.password.errors }}
+                {{ form.password.label_tag }} {{ form.password }}
+                <input type="hidden" name="next" value="{{ next }}">
+            </div>
+            {% url 'admin_password_reset' as password_reset_url %}
+            {% if password_reset_url %}
+                <div class="password-reset-link">
+                    <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+                </div>
+            {% endif %}
+            <div class="submit-row">
+                <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}">
+            </div>
+
+
+            <input type="submit" value="Login with Discord" />
+            <input type="submit" value="Login with GitHub" />
+            <input type="submit" value="Login with BitBucket" />
+            <input type="submit" value="Login with PayPal" />
+
+            <br />
+            <a href="{% url 'password_reset' %}">Forgot password?</a>
+            <a href="{% url 'register' %}">Register</a>
+        </form>
+
+    </div>
 {% endblock %}

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -5,17 +6,12 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.forms import Form, CharField, EmailField, PasswordInput
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.template.loader import get_template
+from django.urls import reverse
 from django.views.generic import FormView
 from DjangoAuthExample import settings
 
-
-@login_required
-def profile(request):
-    print(request.user)
-    print(request.user.get_username())
-    print(request.user.get_full_name())
-    print(request.user.get_short_name())
-    return HttpResponse("Welcome to your private profile! %s <a href=\"/logout\">Logout</a>" % request.user)
 
 
 class RegisterForm(Form):
@@ -41,10 +37,11 @@ class RegisterView(FormView):
 
         try:
             register_new_user(form, self.request)
+            messages.success(self.request, 'Thank you for registering. You have been automatically logged in.')
             return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         except IntegrityError as e:
             print("Error when registering a new user: %s" % e)
-            return HttpResponse('Thank you for registering, an email has been sent.')
+            return HttpResponse(get_template('authn/registration_complete.html').render())
 
 
 def register_new_user(form, request):
@@ -53,8 +50,9 @@ def register_new_user(form, request):
     if existing_user.exists():
         # TODO put email sub/body in template w/ i18n translation
         # TODO rate limit email
-        existing_user.first().email_user('Attempted registration on __site___',
-                                 'Hello, someone attempted to register your email address at ______ but you are already registered. If you forgot your password, visit this forgot password page')
+        password_reset_url = request.scheme + '://' + request.get_host() + reverse('password_reset')
+        existing_user.first().email_user(get_template('emails/already_registered_subject.txt').render(context={'site_name': settings.SITE_NAME}),
+                                         get_template('emails/already_registered.html').render(context={'password_reset_url': password_reset_url}))
         raise IntegrityError("Email already exists: %s" % form.cleaned_data['email'])
     else:
         # Create and log in user
@@ -66,3 +64,31 @@ def register_new_user(form, request):
             last_name=form.cleaned_data['last_name'])
         login(request, newly_created_user)
         # TODO send rate limited email verification
+
+
+def login_discord(request):
+    return HttpResponseRedirect(settings.DISCORD_SOCIAL_LOGIN_URL)
+
+
+"""
+API_ENDPOINT = 'https://discordapp.com/api/v6'
+CLIENT_ID = '332269999912132097'
+CLIENT_SECRET = '937it3ow87i4ery69876wqire'
+REDIRECT_URI = 'https://nicememe.website'
+
+def exchange_code(code):
+  data = {
+    'client_id': CLIENT_ID,
+    'client_secret': CLIENT_SECRET,
+    'grant_type': 'authorization_code',
+    'code': code,
+    'redirect_uri': REDIRECT_URI,
+    'scope': 'identify email connections'
+  }
+  headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+  r = requests.post('%s/oauth2/token' % API_ENDPOINT, data, headers)
+  r.raise_for_status()
+  return r.json()
+"""

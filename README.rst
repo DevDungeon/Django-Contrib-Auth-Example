@@ -17,3 +17,7 @@ Contact
 
 NanoDano <nanodano@devdungeon.com>
 
+Useful links
+============
+
+- https://requests-oauthlib.readthedocs.io/en/latest/

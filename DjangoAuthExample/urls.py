@@ -19,15 +19,19 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import path
 
-from authn.views import profile, RegisterView
-from website.views import home
+from authn.views import RegisterView, login_discord
+from website.views import home, about, profile
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    url(r'^$', home),
-    url(r'^profile/', profile),
+    # Website app
+    url(r'^$', home, name='home'),
+    url(r'^about/', about, name='about'),
+    url(r'^profile/', profile, name='profile'),
 
+    # Auth
+    url(r'^login/discord', login_discord, name='login_discord'),
     url(r'^login/', LoginView.as_view(template_name='authn/login.html'), name='login', ),
     url(r'^logout/', LogoutView.as_view(template_name='authn/logged_out.html'), name='logout'),
     url('^password_change/done/', PasswordChangeDoneView.as_view(template_name='authn/password_change_done.html'),
@@ -43,10 +47,9 @@ urlpatterns = [
          name='password_reset_confirm'),
 
     # TODO Registration (with non-enumerable responses and rate limited emails)
-    url('^register/', RegisterView.as_view()),
+    url('^register/', RegisterView.as_view(), name='register'),
 
     # Social OAuth with Discord
-
     # Email verification (with rate limited re-sends)
     # /email-verify?token=zzzzzzzz
 
