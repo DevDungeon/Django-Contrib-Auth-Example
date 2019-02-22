@@ -18,9 +18,10 @@ from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import path
-
-from authn.views import RegisterView, login_discord
-from website.views import home, about, profile
+import account.views
+from authn.views import login_discord
+from registration.views import RegisterView
+from website.views import home, about
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -28,7 +29,9 @@ urlpatterns = [
     # Website app
     url(r'^$', home, name='home'),
     url(r'^about/', about, name='about'),
-    url(r'^profile/', profile, name='profile'),
+
+    # Account
+    url(r'^account/', account.views.view, name='account_view'),
 
     # Auth
     url(r'^login/discord', login_discord, name='login_discord'),

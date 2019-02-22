@@ -44,7 +44,7 @@
             <div id="login-links" class="mr-md-4">
                 {% if request.user.is_authenticated %}
                     {{ request.user.username }}
-                    <a href="{% url 'profile' %}">Profile</a><br/>
+                    <a href="{% url 'account_view' %}">Account</a><br/>
                     <a href="{% url 'logout' %}">Logout</a><br/>
                 {% else %}
                     <a href="{% url 'login' %}">Login</a><br/>
